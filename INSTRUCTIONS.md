@@ -21,7 +21,7 @@ javac -cp .:junit-4.13.2.jar:hamcrest-core-1.3.jar *.java
 
 Windows (PowerShell or CMD):
 ```
-javac -cp '.;junit-4.13.2.jar;hamcrest-core-1.3.jar' *.java
+javac -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar *.java
 ```
 
 To run the tests, you will use:
@@ -34,8 +34,8 @@ java -cp .:junit-4.13.2.jar:hamcrest-core-1.3.jar RunInterfaceTests
 
 Windows (PowerShell or CMD):
 ```
-java  -cp '.;junit-4.13.2.jar;hamcrest-core-1.3.jar' RunTests
-java  -cp '.;junit-4.13.2.jar;hamcrest-core-1.3.jar' RunInterfaceTests
+java  -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar RunTests
+java  -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar RunIteratorTests
 ```
 
 ## Vocabulary

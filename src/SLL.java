@@ -149,9 +149,10 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @return v item removed
    */
   public T removeFirst(){
-    //if list is empty return null
+
+    //if list is empty throw MissingElementException
     if (isEmpty()) {
-      return null;
+      throw new MissingElementException();
     }
 
     //if list has one node, delete it and return null
@@ -171,9 +172,10 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @return item removed
    */
   public T removeLast(){
-    //if list is empty return null
+
+    //if list is empty throw MissingElementException
     if (isEmpty()) {
-      return null;
+      throw new MissingElementException();
     }
 
     //if list has one node, delete it and return null
