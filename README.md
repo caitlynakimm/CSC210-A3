@@ -14,7 +14,10 @@ Kudos/shout-out to particularly helpful members of the class or teaching staff:
 
 
 Any references used besides JavaDoc and course materials:
-
+- https://www.geeksforgeeks.org/java/stringbuilder-class-in-java-with-examples/
+- https://www.geeksforgeeks.org/dsa/remove-first-node-of-the-linked-list/
+- https://www.geeksforgeeks.org/dsa/insert-node-at-the-end-of-a-linked-list/
+- https://www.geeksforgeeks.org/java/java-program-to-create-a-singly-linked-list-and-count-the-number-of-nodes/
 
 If you used AI, please describe how and the interaction between AI and your understanding of this assignment and specifically the related data structures and algorithms:
 - The instructions for the spliceByCopy method was very confusing to me 
