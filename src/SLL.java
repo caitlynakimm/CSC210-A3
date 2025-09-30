@@ -83,15 +83,13 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
     //StringBuilder allows for mutuable sequence of characters
     StringBuilder nodeData = new StringBuilder("[");
 
-    //NodeSL<T> current = head;
-
-    for (NodeSL<T> current = this.head; current.getNext() != null; current = current.getNext()) {
+    for (NodeSL<T> current = head; current != null; current = current.getNext()) {
       nodeData.append(current.getData());
-      current = current.getNext(); //saves next node into current
 
-      if (current != null) {
+      if (current.getNext() != null) {
         nodeData.append(", ");
       }
+
     }
 
     nodeData.append("]");
@@ -103,18 +101,15 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @param item to insert 
    */
   public void addLast(T v){
-    NodeSL<T> newTail = new NodeSL<T>(v, null);
+    NodeSL<T> newNode = new NodeSL<T>(v, null);
 
     if (isEmpty()) {
-      head = new NodeSL<T>(v, null); //create node with data and pointing to null
+      head = newNode;
       tail = head;
+    } else {
+      tail.setNext(newNode);
+      tail = newNode; //update tail to new node
     }
-
-    NodeSL<T> oldTail = head;
-    while (oldTail.getNext() != null) {
-      oldTail = oldTail.getNext();
-    }
-    oldTail.setNext(newTail);
   }
 
   /** 
@@ -139,7 +134,7 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
     here.setNext(newNode);
 
     //if new node is inserted after previous tail, new node becomes tail
-    if (here.getNext() == null) {
+    if (here == tail) {
       tail = newNode;
     }
   }
@@ -155,15 +150,16 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
       throw new MissingElementException();
     }
 
-    //if list has one node, delete it and return null
-    if (head.getNext() == null) {
-      return null;
-    }    
+    T removedItem = head.getData();
 
-    NodeSL<T> temp = head;
-    head = head.getNext();
-    T removedItem = temp.getData();
-    temp = null;
+    //if list has one node --> head and tail become null
+    if (head == tail) {
+      head = null;
+      tail = null;
+    } else {
+      head = head.getNext();
+    }
+
     return removedItem;
   }
 
@@ -178,19 +174,25 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
       throw new MissingElementException();
     }
 
-    //if list has one node, delete it and return null
-    if (head.getNext() == null) {
-      return null;
-    }
+    T removedItem;
 
-    NodeSL<T> secondLast = head;
+    //if list has one node --> head and tail become null
+    if (head == tail) {
+      removedItem = head.getData();
+      head = null;
+      tail = null;
+    } else {
+      NodeSL<T> secondLast = head;
 
-    while (secondLast.getNext().getNext() != null) {
-      secondLast = secondLast.getNext(); //saves next node into secondLast
+      while (secondLast.getNext() != tail) {
+        secondLast = secondLast.getNext(); //saves next node into secondLast
+      }
+
+      removedItem = tail.getData();
+      secondLast.setNext(null);
+      tail = secondLast;
     }
-    T removedItem = secondLast.getNext().getData();
-    secondLast.setNext(null);
-    tail = secondLast;
+    
     return removedItem;
   }
 
@@ -236,7 +238,7 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
     //iterates through all elements and counts them
     while (currentNode != null){
       count ++;
-      currentNode.getNext();
+      currentNode = currentNode.getNext();
     }
 
     return count;
@@ -250,26 +252,15 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    */
   public SLL<T> subseqByCopy(NodeSL<T> here, int n){
     SLL<T> subSeqList = new SLL<T>();
-    
     NodeSL<T> current = here; //begin at starting point
-    int counter = 0; //count how many nodes we pass
-    int nodesCopied = 0; //count how many nodes are copied to subsequence
 
-    while (current != null && counter < n) {
-      counter ++;
-      current = current.getNext();
-    }
-
-    if (counter < n) {
-        throw new SelfInsertException();
-    }
-    
-    current = here; //restart current to given starting point
-
-    while (nodesCopied < n) {
+    while (n > 0) {
+      if (current == null) {
+        throw new SelfInsertException(); //not enough nodes from original list to copy
+      }
       subSeqList.addLast(current.getData());
       current = current.getNext();
-      nodesCopied ++;
+      n --; //decrease n by 1 per iteration, until enough nodes are copied
     }
 
     return subSeqList;
@@ -282,15 +273,27 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @param afterHere  marks the position in this where the new list should go
    */
   public void spliceByCopy(SLL<T> list, NodeSL<T> afterHere){
+    if (list.isEmpty()) { //nothing to copy from list
+      return;
+    }
+
     SLL<T> copiedList  = new SLL<T>(list); //deep copy of list
     
     if (afterHere == null) {
       copiedList.getTail().setNext(this.head); //connects tail of copiedList to the current head of this
       this.head = copiedList.getHead(); //updates this.head to point to the head of copiedList
+        
+      if (this.tail == null) { //if this is empty
+          this.tail = copiedList.getTail();
+      }
     } else {
       NodeSL<T> whatComesNext = afterHere.getNext();
       copiedList.getTail().setNext(whatComesNext);
       afterHere.setNext(copiedList.getHead());
+
+      if (afterHere == tail) { //if copiedList is inserted after tail
+        this.tail = copiedList.getTail();
+      }
     }
 
   }
