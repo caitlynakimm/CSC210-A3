@@ -203,14 +203,22 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    */
   public T removeAfter(NodeSL<T> here){
     if (isEmpty()) {
-      throw new MissingElementException(); //"Can't remove an item after a node in an empty list."
+      throw new MissingElementException(); //"Can't remove a node after a given node in an empty list."
     }
 
-    if (here == null) {
-      throw new IllegalArgumentException("Can't remove an item after a node that is null.");
+    if (here == null) { //remove head when here is null
+      NodeSL<T> nodeToRemove = head;
+      T removedItem = nodeToRemove.getData();
+      head = head.getNext();
+
+      if (head == null){ //if we removed the only node in the list, update tail to null
+        tail = null;
+      }
+
+      return removedItem;
     }
 
-    if (here.getNext() == null){
+    if (here.getNext() == null) {
       throw new IllegalArgumentException("There is no node to remove after the given node.");
     }
 
@@ -305,8 +313,45 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @return  the new list
    */
   public SLL<T> subseqByTransfer(NodeSL<T> afterHere, NodeSL<T> toHere){
-    SLL<T> bob = new SLL<T>();
-    return bob;
+    if (toHere == null) {
+      throw new IllegalArgumentException("toHere can't be null.");
+    }
+    
+    SLL<T> subSeqList = new SLL<T>();
+        
+    if (afterHere == null) {
+      if (this.head == null) {
+        throw new IllegalArgumentException("Cannot extract from an empty list.");
+      }
+      subSeqList.head = this.head;
+      subSeqList.tail = toHere;
+      this.head = toHere.getNext(); //updates original list's head to be node after toHere node
+      
+      if (toHere == this.tail) { //if entire original list is extracted, update its tail to be null
+        this.tail = null;
+      }
+    } else {
+        if (afterHere.getNext() == null) {
+          throw new IllegalArgumentException("No nodes after the afterHere node to extract.");
+        }
+
+        if (toHere == afterHere) { //toHere and afterHere can't be the same
+          throw new IllegalArgumentException("toHere can't be the same as afterHere.");
+        }
+
+        subSeqList.head = afterHere.getNext();
+        subSeqList.tail = toHere;
+        afterHere.setNext(toHere.getNext()); //original list is updated to remove extracted subsequence
+        
+        if (toHere == this.tail) {
+          this.tail = afterHere; //if we extracted to the end of original list, update tail to be afterHere node
+        }
+    }
+
+    subSeqList.tail.setNext(null); //separate extracted subsequence from original list
+
+    return subSeqList;
+
   }
 
   /** 
@@ -316,6 +361,29 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @param afterHere  Marks the place where the new elements are inserted
    */
   public void spliceByTransfer(SLL<T> list, NodeSL<T> afterHere){
+    if (list.isEmpty()) {
+      return;
+    }
+
+    if (afterHere == null) {
+      list.tail.setNext(this.head); //connect list's tail to splice to original list's head
+      this.head = list.head; //original list's head points to spliced list's head
+
+      if (this.tail == null) { //update tail to spliced list's tail if original list is empty
+        this.tail = list.tail;
+      }
+    } else {
+      list.tail.setNext(afterHere.getNext());
+      afterHere.setNext(list.head);
+
+      if (afterHere == this.tail) { //if splicing in list after current tail, update tail
+        this.tail = list.tail;
+      }
+    }
+
+    //Empty list that was spliced in (all nodes were transferred)
+    list.head = null;
+    list.tail = null;
 
   }
 
