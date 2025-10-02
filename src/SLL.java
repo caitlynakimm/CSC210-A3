@@ -1,8 +1,9 @@
 /**
- * Class to implement a singly linked list
- *
+ * Class to implement a singly linked list with insertion, deletion, copying, and transferring operations
+ * List references to both head and tail nodes
  * @author Caitlyn Kim
  * @version Fall 2025
+ * @param <T> the type of elements held in the linked list
  */
 
 public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
@@ -12,13 +13,20 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
   /** The tail node of the list */
   private NodeSL<T> tail;
 
-  /** Constructs an empty linked list by making head and tail null */
+  /**
+   * Constructs an empty singly linked list
+   * Initializes head and tail references to null
+   */
   public SLL(){
     this.head = null;
     this.tail = null;
   }
 
-  /** Constructs a deep copy of a linked list object by looping through the list and copying each node */
+  /**
+   * Constructs a deep copy of a linked list
+   * Creates new nodes with same values as original list to keep same order
+   * @param orig the linked list to be copied (can't be null)
+   */
   public SLL(SLL<T> orig) {
     if (orig.head == null) {
       head = tail = null;
@@ -285,6 +293,10 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
       return;
     }
 
+    if (list == this) { //can't splice a list into itself
+      throw new SelfInsertException();
+    }
+    
     SLL<T> copiedList  = new SLL<T>(list); //deep copy of list
     
     if (afterHere == null) {
@@ -361,8 +373,13 @@ public class SLL<T> implements Phase1SLL<T>, Phase2SLL<T>, Phase4SLL<T>{
    *  @param afterHere  Marks the place where the new elements are inserted
    */
   public void spliceByTransfer(SLL<T> list, NodeSL<T> afterHere){
+
     if (list.isEmpty()) {
       return;
+    }
+
+    if (list == this) { //can't splice a list into itself
+      throw new SelfInsertException();
     }
 
     if (afterHere == null) {
